@@ -1,5 +1,51 @@
+import math
 from django.db import models
+from django.utils import timezone
 
+class MarketSignal(models.Model):
+    """
+    Layer I: Data Ingestion Model.
+    Stores macroeconomic and geopolitical signals and calculates real-time
+    exponential decay to isolate structural shifts from historical data.
+    """
+    class CategoryChoices(models.TextChoices):
+        GEOPOLITICAL = 'GEOPOLITICAL', 'Geopolitical'
+        COMMODITY = 'COMMODITY', 'Commodity'
+        FIXED_INCOME = 'FIXED_INCOME', 'Fixed Income'
+
+    indicator_name = models.CharField(max_length=150, verbose_name="Specific Indicator")
+    category = models.CharField(max_length=50, choices=CategoryChoices.choices)
+    raw_value = models.FloatField(verbose_name="Current Value")
+    unit = models.CharField(max_length=20, help_text="e.g., /bbl, /lb, %, bps")
+    ingested_at = models.DateTimeField(auto_now_add=True, verbose_name="Ingestion Timestamp")
+    
+    # Decay parameters
+    half_life_days = models.IntegerField(
+        null=True, blank=True, 
+        help_text="7 for Geopolitical, 14 for Commodity, Null for Fixed Income"
+    )
+
+    @property
+    def current_decayed_value(self):
+        """
+        Dynamically applies exponential decay using the formula:
+        N(t) = N0 * (1/2)^(t / t_half)
+        """
+        if not self.half_life_days:
+            # Fixed Income metrics (like US 10-Year Yield) do not use decay 
+            return self.raw_value
+            
+        days_elapsed = (timezone.now() - self.ingested_at).days
+        
+        # Prevent division by zero or negative days (future dates)
+        if days_elapsed <= 0:
+            return self.raw_value
+            
+        decay_factor = math.pow(0.5, days_elapsed / self.half_life_days)
+        return round(self.raw_value * decay_factor, 2)
+
+    def __str__(self):
+        return f"{self.indicator_name}: {self.current_decayed_value} {self.unit} (Raw: {self.raw_value})"
 class Deal(models.Model):
     """
     Model representing an investment opportunity processed by the VAI Engine.

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAI Engine Intelligence Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-primary">VAI Engine: Macro-Geopolitical Deal Origination</h2>
+    
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Target Opportunity</th>
+                        <th>Asset Class</th>
+                        <th>Region</th>
+                        <th>O-Score</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for deal in deals %}
+                    <tr>
+                        <td class="fw-bold">{{ deal.name }}</td>
+                        <td>{{ deal.asset_class }}</td>
+                        <td>{{ deal.region }}</td>
+                        <td>
+                            {% if deal.final_score > 0 %}
+                                {{ deal.final_score }}
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if deal.status == 'ACTION' %}
+                                <span class="badge bg-success">ACTION (Tier 1)</span>
+                            {% elif deal.status == 'SUPPRESS' %}
+                                <span class="badge bg-danger">SUPPRESS (OFAC)</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">MONITOR</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No deals evaluated yet. Add deals via the admin panel.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
