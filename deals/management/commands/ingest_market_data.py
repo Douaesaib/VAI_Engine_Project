@@ -5,63 +5,19 @@ class Command(BaseCommand):
     help = 'Ingests initial Layer I market and geopolitical signals into the VAI Engine database.'
 
     def handle(self, *args, **kwargs):
-        # Data extracted from the VAI Engine Intelligence Report - Layer I
         signals_data = [
-            {
-                'indicator_name': 'Brent Crude Oil (Front Month)',
-                'category': 'COMMODITY',
-                'raw_value': 109.41,
-                'unit': '$/bbl',
-                'half_life_days': 14
-            },
-            {
-                'indicator_name': 'COMEX Copper',
-                'category': 'COMMODITY',
-                'raw_value': 5.52,
-                'unit': '$/lb',
-                'half_life_days': 14
-            },
-            {
-                'indicator_name': 'COMEX Silver',
-                'category': 'COMMODITY',
-                'raw_value': 71.33,
-                'unit': '$/oz',
-                'half_life_days': 14
-            },
-            {
-                'indicator_name': 'US 10-Year Treasury Yield',
-                'category': 'FIXED_INCOME',
-                'raw_value': 4.38,
-                'unit': '%',
-                'half_life_days': None  # No decay for fixed income
-            },
-            {
-                'indicator_name': 'US 10Y-2Y Spread',
-                'category': 'FIXED_INCOME',
-                'raw_value': 52.0,
-                'unit': 'bps',
-                'half_life_days': None
-            },
-            {
-                'indicator_name': 'ACLED Daily Incident Volume',
-                'category': 'GEOPOLITICAL',
-                'raw_value': 550.0,
-                'unit': 'Incidents/Day',
-                'half_life_days': 7
-            },
-            {
-                'indicator_name': 'Strait of Hormuz Traffic Reduction',
-                'category': 'GEOPOLITICAL',
-                'raw_value': 95.0,
-                'unit': '% Reduction',
-                'half_life_days': 7
-            }
+            {'indicator_name': 'Brent Crude Oil (Front Month)', 'category': 'COMMODITY', 'raw_value': 109.41, 'unit': '$/bbl', 'half_life_days': 14},
+            {'indicator_name': 'COMEX Copper', 'category': 'COMMODITY', 'raw_value': 5.52, 'unit': '$/lb', 'half_life_days': 14},
+            {'indicator_name': 'COMEX Silver', 'category': 'COMMODITY', 'raw_value': 71.33, 'unit': '$/oz', 'half_life_days': 14},
+            {'indicator_name': 'US 10-Year Treasury Yield', 'category': 'FIXED_INCOME', 'raw_value': 4.38, 'unit': '%', 'half_life_days': None},
+            {'indicator_name': 'US 10Y-2Y Spread', 'category': 'FIXED_INCOME', 'raw_value': 52.0, 'unit': 'bps', 'half_life_days': None},
+            {'indicator_name': 'ACLED Daily Incident Volume', 'category': 'GEOPOLITICAL', 'raw_value': 550.0, 'unit': 'Incidents/Day', 'half_life_days': 7},
+            {'indicator_name': 'Strait of Hormuz Traffic Reduction', 'category': 'GEOPOLITICAL', 'raw_value': 95.0, 'unit': '% Reduction', 'half_life_days': 7}
         ]
 
         self.stdout.write(self.style.WARNING('Starting Data Ingestion Process...'))
 
         for data in signals_data:
-            # update_or_create ensures we don't create duplicate entries if run multiple times
             signal, created = MarketSignal.objects.update_or_create(
                 indicator_name=data['indicator_name'],
                 defaults={
