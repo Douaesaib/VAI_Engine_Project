@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Deal
+from .services import run_monte_carlo_irr_simulation
 
 def dashboard(request):
     """
@@ -10,6 +11,7 @@ def dashboard(request):
     deals = Deal.objects.all().order_by('-final_score')
     
     context = {
-        'deals': deals
+        'deals': deals,
+        'simulation': simulation_results
     }
     return render(request, 'deals/dashboard.html', context)

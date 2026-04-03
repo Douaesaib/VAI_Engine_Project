@@ -6,7 +6,7 @@ def run_monte_carlo_irr_simulation(iterations=10000):
     to estimate the Internal Rate of Return (IRR) under volatility.
     """
     # 1. Base Assumptions (Proxies based on VAI Engine Report)
-    base_irr = 18.5  # Base expected IRR in percentage
+    base_irr = 18.0  # Base expected IRR in percentage
     
     # 2. Volatility Distributions (Normal Distributions)
     # CAPEX overruns: standard deviation of 8%
@@ -21,8 +21,8 @@ def run_monte_carlo_irr_simulation(iterations=10000):
     # A 1% increase in CAPEX reduces IRR by 0.2%
     # A 1% increase in Gas Price reduces IRR by 0.1%
     
-    capex_impact = capex_shocks * 20.0  
-    gas_impact = gas_price_shocks * 10.0 
+    capex_impact = capex_shocks * 30.0  
+    gas_impact = gas_price_shocks * 17.5
     
     simulated_irrs = base_irr - (capex_impact + gas_impact)
     
